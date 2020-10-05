@@ -5,6 +5,7 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 ## Env var
+ENV APACHE_DOCUMENT_ROOT /var/www
 ENV APACHE_RUN_USER $USERNAME
 ENV APACHE_RUN_GROUP $USERNAME    
 ENV PATH "/root/.composer/vendor/bin:~/.composer/vendor/bin:/var/www/vendor/bin:$PATH"
@@ -43,10 +44,6 @@ RUN groupadd --gid $USER_GID $USERNAME && \
     echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
-
-## Set working directory 
-WORKDIR /var/www
-
 #### Install all dependencies wkhtmltopdf
 RUN wget https://github.com/h4cc/wkhtmltopdf-amd64/blob/master/bin/wkhtmltopdf-amd64?raw=true -O /usr/local/bin/wkhtmltopdf && \
     chmod +x /usr/local/bin/wkhtmltopdf
@@ -62,13 +59,16 @@ RUN pecl install memcached redis xdebug && \
     echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 ## Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    composer global require hirak/prestissimo
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    
+## apache
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf  && \
+    a2enmod rewrite
 
-## Grunt
-RUN npm install -g grunt-cli
+## Set working directory 
+WORKDIR /var/www
 
-## mod_rewrite
-RUN a2enmod rewrite
-
-USER $USERNAME
+## dependencias
+RUN sudo npm install -g grunt-cli
+RUN composer global require hirak/prestissimo --no-plugins --no-scripts
