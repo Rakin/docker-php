@@ -71,4 +71,3 @@ WORKDIR /var/www
 
 ## dependencias
 RUN sudo npm install -g grunt-cli
-RUN composer global require hirak/prestissimo --no-plugins --no-scripts
