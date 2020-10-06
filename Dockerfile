@@ -68,6 +68,3 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 
 ## Set working directory 
 WORKDIR /var/www
-
-## dependencias
-RUN sudo npm install -g grunt-cli
