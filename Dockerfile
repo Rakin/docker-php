@@ -1,19 +1,13 @@
 FROM php:7.2-apache
 
-ARG USERNAME=www
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+# ********************************************************
+# * Anything else you want to do like clean up goes here *
+# ********************************************************
 
-## Env var
-ENV APACHE_DOCUMENT_ROOT /var/www
-ENV APACHE_RUN_USER $USERNAME
-ENV APACHE_RUN_GROUP $USERNAME    
-ENV PATH "/root/.composer/vendor/bin:~/.composer/vendor/bin:/var/www/vendor/bin:$PATH"
-ENV COMPOSER_MEMORY_LIMIT -1
+# [Optional] Set the default user. Omit if you want to keep the default as root.
 
 ## Dependencial linux
 RUN apt-get update && apt-get install -y \
-    sudo \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -38,12 +32,6 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-## Create the user
-RUN groupadd --gid $USER_GID $USERNAME && \
-    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
-    echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
-    chmod 0440 /etc/sudoers.d/$USERNAME
-
 #### Install all dependencies wkhtmltopdf
 RUN wget https://github.com/h4cc/wkhtmltopdf-amd64/blob/master/bin/wkhtmltopdf-amd64?raw=true -O /usr/local/bin/wkhtmltopdf && \
     chmod +x /usr/local/bin/wkhtmltopdf
@@ -61,10 +49,7 @@ RUN pecl install memcached redis xdebug && \
 ## Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     
-## apache
+
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
     sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf  && \
     a2enmod rewrite
-
-## Set working directory 
-WORKDIR /var/www
