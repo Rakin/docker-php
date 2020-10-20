@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libwebp-dev \ 
   libxpm-dev \
   wget \
+  openssh-client \
   zsh && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
