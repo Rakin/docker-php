@@ -48,8 +48,9 @@ RUN pecl install redis && \
     docker-php-ext-install gd pdo_mysql zip exif pcntl xml  && \
     docker-php-ext-enable redis xdebug && \
     echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini    
-
+    echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini && \    
+    echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/conf.d/xdebug.ini
+    
 ## Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require laravel/installer
