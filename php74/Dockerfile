@@ -46,7 +46,8 @@ RUN groupadd --gid $USER_GID $USERNAME \
 ## Install extensions
 RUN pecl install redis && \
     pecl install xdebug && \
-    docker-php-ext-install gd pdo_mysql zip exif pcntl xml  && \
+    docker-php-ext-configure intl && \
+    docker-php-ext-install gd pdo_mysql zip exif pcntl xml intl && \
     docker-php-ext-enable redis xdebug && \
     echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini && \    
@@ -59,6 +60,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN curl -LO https://deployer.org/deployer.phar && \
     mv deployer.phar /usr/local/bin/dep && \
     chmod +x /usr/local/bin/dep 
+
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    sudo apt-get install -y nodejs
 
 USER $USERNAME
 ENV PATH="$PATH:/var/www/vendor/bin"
