@@ -47,7 +47,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN pecl install redis && \
     pecl install xdebug && \
     docker-php-ext-configure intl && \
-    docker-php-ext-install gd pdo_mysql zip exif pcntl xml intl && \
+    docker-php-ext-install gd pdo_mysql zip exif pcntl xml intl soap && \
     docker-php-ext-enable redis xdebug && \
     echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini && \
     echo "xdebug.discover_client_host=true" >> /usr/local/etc/php/conf.d/xdebug.ini
