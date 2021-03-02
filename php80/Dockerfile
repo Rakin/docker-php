@@ -50,7 +50,8 @@ RUN pecl install redis && \
     docker-php-ext-install gd pdo_mysql zip exif pcntl xml intl soap && \
     docker-php-ext-enable redis xdebug && \
     echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.discover_client_host=true" >> /usr/local/etc/php/conf.d/xdebug.ini
+    echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini && \
+    echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
     
 ## Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
