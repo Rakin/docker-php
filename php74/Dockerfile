@@ -67,5 +67,5 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
 USER $USERNAME
 ENV PATH="$PATH:/var/www/vendor/bin"
 # set the zsh
-ENV ZSH_THEME=agnoster
+ENV ZSH_THEME=robbyrussell
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
