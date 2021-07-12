@@ -69,3 +69,4 @@ ENV PATH="$PATH:/var/www/vendor/bin"
 # set the zsh
 ENV ZSH_THEME=robbyrussell
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+RUN sudo chsh -s $(which zsh) $(whoami)
