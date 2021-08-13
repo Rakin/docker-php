@@ -1,4 +1,4 @@
-FROM php:8-cli
+FROM php:8-apache
 
 # ********************************************************
 # * Anything else you want to do like clean up goes here *
@@ -63,6 +63,13 @@ RUN curl -LO https://deployer.org/deployer.phar && \
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
     sudo apt-get install -y nodejs
+
+ENV APACHE_DOCUMENT_ROOT /var/www/public
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN sudo a2enmod rewrite
 
 USER $USERNAME
 ENV PATH="$PATH:/var/www/vendor/bin"
